@@ -11,7 +11,42 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  email String @unique
-  name String?
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      Role     @default(EXAMINEE)
+  createdAt DateTime @default(now())
+  Enrolment Enrolment[]
+}
+
+model Class {
+  id        Int         @id @default(autoincrement())
+  name      String
+  section   String
+  createdAt DateTime    @default(now())
+  Enrolment Enrolment[]
+  Exam     Exam[]
+}
+
+model Enrolment {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  classId   Int
+  User      User      @relation(fields: [userId], references: [id])
+  Class     Class     @relation(fields: [classId], references: [id])
+  enrolledAt DateTime @default(now())
+}
+
+model Exam {
+  id        Int       @id @default(autoincrement())
+  classId   Int
+  class     Class     @relation(fields: [classId], references: [id])
+  startTime DateTime
+  endTime   DateTime
+  createdAt DateTime  @default(now()) 
+}
+
+enum Role {
+  PROCTOR
+  EXAMINEE
 }
