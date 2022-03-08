@@ -1,23 +1,32 @@
 import { Controller, Get, Query } from '@nestjs/common'
 import { ClassService } from './class.service'
-import { Class as ClassModel, User } from '@prisma/client'
+import { Class as ClassModel, Prisma, User } from '@prisma/client'
 
-@Controller('class')
+@Controller('classes')
 export class ClassController {
-  constructor(private prisma: ClassService) {}
+  constructor(private readonly classService: ClassService) {}
 
   @Get()
   async getClasses(
-    @Query('proctorId') proctorId: User['id'],
+    @Query()
+    queryParams: Prisma.ClassWhereInput & {
+      proctorId?: User['id']
+      examineeId?: User['id']
+    },
   ): Promise<ClassModel[]> {
-    if (proctorId) {
-      return this.prisma.classesFromProctor(proctorId)
+    if (queryParams.examineeId) {
+      queryParams.examineeId = +queryParams.examineeId
+      return this.classService.classesFromExaminee({
+        examineeId: queryParams.examineeId,
+      })
     }
-    return this.prisma.classes()
+
+    if (queryParams.proctorId) queryParams.proctorId = +queryParams.proctorId
+    return this.classService.classes({ where: queryParams })
   }
 
   @Get('/:id')
   async getClassById(@Query('id') id: ClassModel['id']): Promise<ClassModel> {
-    return this.prisma.class({ id })
+    return this.classService.class({ id })
   }
 }

@@ -44,6 +44,8 @@ model Exam {
   id        Int      @id @default(autoincrement())
   classId   Int
   class     Class    @relation(fields: [classId], references: [id])
+  link String
+  platform Platform @default(TEAMS)
   startTime DateTime
   endTime   DateTime
   createdAt DateTime @default(now())
@@ -52,4 +54,10 @@ model Exam {
 enum Role {
   PROCTOR
   EXAMINEE
+}
+
+enum Platform {
+  TEAMS
+  GOOGLE_FORMS
+  MOODLE
 }

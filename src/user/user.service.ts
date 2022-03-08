@@ -14,20 +14,22 @@ export class UserService {
     })
   }
 
-  async users(
-    userWhereInput?: Prisma.UserWhereInput,
-    orderBy?: Prisma.UserOrderByWithRelationInput,
-  ): Promise<User[]> {
+  async users(params: {
+    where?: Prisma.UserWhereInput
+    orderBy?: Prisma.UserOrderByWithRelationInput
+  }): Promise<User[]> {
+    const { where, orderBy } = params
     return this.prisma.user.findMany({
-      where: userWhereInput,
+      where,
       orderBy,
     })
   }
 
-  async usersFromClass(
-    classId: Class['id'],
-    orderBy?: Prisma.UserOrderByWithRelationInput,
-  ): Promise<User[]> {
+  async usersFromClass(params: {
+    classId: Class['id']
+    orderBy?: Prisma.UserOrderByWithRelationInput
+  }): Promise<User[]> {
+    const { classId, orderBy } = params
     return this.prisma.user.findMany({
       where: { Enrolment: { some: { classId } } },
       orderBy,

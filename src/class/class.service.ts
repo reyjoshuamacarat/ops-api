@@ -14,24 +14,26 @@ export class ClassService {
     })
   }
 
-  async classes(
-    classWhereInput?: Prisma.ClassWhereInput,
-    orderBy?: Prisma.ClassOrderByWithRelationInput,
-  ): Promise<Class[]> {
-    return this.prisma.class.findMany({ where: classWhereInput, orderBy })
-  }
-
-  async classesFromProctor(
-    proctorId: User['id'],
-    orderBy?: Prisma.ClassOrderByWithRelationInput,
-  ): Promise<Class[]> {
-    return this.prisma.class.findMany({
-      where: { proctorId: +proctorId },
-      orderBy,
-    })
+  async classes(params: {
+    where?: Prisma.ClassWhereInput
+    orderBy?: Prisma.ClassOrderByWithRelationInput
+  }): Promise<Class[]> {
+    const { where, orderBy } = params
+    return this.prisma.class.findMany({ where, orderBy })
   }
 
   async createClass(data: Class): Promise<Class> {
     return this.prisma.class.create({ data })
+  }
+
+  async classesFromExaminee(params: {
+    examineeId: User['id']
+    orderBy?: Prisma.ExamOrderByWithRelationInput
+  }): Promise<Class[]> {
+    const { examineeId, orderBy } = params
+    return this.prisma.class.findMany({
+      where: { Enrolment: { some: { userId: examineeId } } },
+      orderBy,
+    })
   }
 }

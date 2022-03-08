@@ -4,7 +4,7 @@ import { User as UserModel, Class } from '@prisma/client'
 import { Controller, Get, Post } from '@nestjs/common'
 import * as bcrypt from 'bcrypt'
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -17,9 +17,9 @@ export class UserController {
     @Query('classId') classId?: Class['id'],
   ): Promise<UserModel[]> {
     if (classId) {
-      return this.userService.usersFromClass(+classId)
+      return this.userService.usersFromClass({ classId: +classId })
     }
-    return this.userService.users()
+    return this.userService.users({})
   }
 
   @Post('/signup')
