@@ -58,13 +58,14 @@ model Exam {
 
 model Activity {
   id           Int          @id @default(autoincrement())
-  isSuspicious Boolean
+  isSuspicious Boolean      @default(true)
   name         ActivityName
   description  String?
   examId      Int
   Exam      Exam        @relation(fields: [examId], references: [id])
   examineeId   Int
   Examinee     User         @relation(fields: [examineeId], references: [id])
+  createdAt   DateTime     @default(now())
 }
 
 enum ActivityName {

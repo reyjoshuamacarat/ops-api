@@ -44,16 +44,7 @@ export class ExamService {
     })
   }
 
-  async createExam(data: Exam): Promise<Exam> {
-    // return this.prisma.exam.create({
-    //   data: {
-    //     classId: 1,
-    //     startTime: '1970-01-01T00:00:00.000Z',
-    //     endTime: '2022-03-08T22:11:11.690Z',
-    //     link: 'https://facebook.com',
-    //     platform: 'GOOGLE_FORMS',
-    //   },
-    // })
+  async create(data: Exam): Promise<Exam> {
     return this.prisma.exam.create({ data })
   }
 }

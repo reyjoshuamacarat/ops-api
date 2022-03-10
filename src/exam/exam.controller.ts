@@ -42,6 +42,6 @@ export class ExamController {
   @Post()
   async createExam(@Body() data: ExamModel): Promise<ExamModel> {
     data.classId = +data.classId
-    return this.examService.createExam(data)
+    return this.examService.create(data)
   }
 }

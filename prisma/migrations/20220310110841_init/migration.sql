@@ -58,11 +58,12 @@ CREATE TABLE "Exam" (
 -- CreateTable
 CREATE TABLE "Activity" (
     "id" SERIAL NOT NULL,
-    "isSuspicious" BOOLEAN NOT NULL,
+    "isSuspicious" BOOLEAN NOT NULL DEFAULT true,
     "name" "ActivityName" NOT NULL,
     "description" TEXT,
     "examId" INTEGER NOT NULL,
     "examineeId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Activity_pkey" PRIMARY KEY ("id")
 );
