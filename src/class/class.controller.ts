@@ -1,4 +1,11 @@
-import { Controller, Get, Query } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  Post,
+  Query,
+} from '@nestjs/common'
 import { ClassService } from './class.service'
 import { Class as ClassModel, Prisma, User } from '@prisma/client'
 
@@ -28,5 +35,25 @@ export class ClassController {
   @Get('/:id')
   async getClassById(@Query('id') id: ClassModel['id']): Promise<ClassModel> {
     return this.classService.class({ id })
+  }
+
+  @Post('/enrol')
+  async enrol(
+    @Body() data: { code: ClassModel['code']; examineeId: User['id'] },
+  ): Promise<ClassModel> {
+    const classInstance = await this.classService.class({ code: data.code })
+
+    if (classInstance)
+      return this.classService.enrol({
+        classId: classInstance.id,
+        examineeId: data.examineeId,
+      })
+
+    throw new HttpException('Class not found', 400)
+  }
+
+  @Post()
+  async createClass(@Body() data: ClassModel): Promise<ClassModel> {
+    return this.classService.createClass(data)
   }
 }

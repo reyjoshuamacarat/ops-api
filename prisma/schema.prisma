@@ -18,6 +18,7 @@ model User {
   createdAt DateTime    @default(now())
   Enrolment Enrolment[]
   Class     Class[]
+  Activity  Activity[]
 }
 
 model Class {
@@ -25,6 +26,7 @@ model Class {
   name      String
   section   String
   createdAt DateTime    @default(now())
+  code      String      @unique
   Enrolment Enrolment[]
   Exam      Exam[]
   proctorId Int
@@ -41,14 +43,40 @@ model Enrolment {
 }
 
 model Exam {
-  id        Int      @id @default(autoincrement())
-  classId   Int
-  class     Class    @relation(fields: [classId], references: [id])
-  link String
-  platform Platform @default(TEAMS)
-  startTime DateTime
-  endTime   DateTime
-  createdAt DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  classId     Int
+  Class       Class    @relation(fields: [classId], references: [id])
+  link        String
+  name        String
+  description String
+  platform    Platform @default(TEAMS)
+  startTime   DateTime
+  endTime     DateTime
+  createdAt   DateTime @default(now())
+  Activity   Activity[]
+}
+
+model Activity {
+  id           Int          @id @default(autoincrement())
+  isSuspicious Boolean
+  name         ActivityName
+  description  String?
+  examId      Int
+  Exam      Exam        @relation(fields: [examId], references: [id])
+  examineeId   Int
+  Examinee     User         @relation(fields: [examineeId], references: [id])
+}
+
+enum ActivityName {
+  SWITCHED_TAB
+  LOSE_WINDOW_FOCUS
+  WENT_INCOGNITO
+  ACCESSED_SITE
+  USED_SEARCH_ENGINE
+  FINISHED_EXAM_FAST
+  ENTERED_EXAM_LATE
+  FINISHED_EXAM
+  WENT_IDLE
 }
 
 enum Role {

@@ -1,6 +1,9 @@
 -- CreateEnum
 CREATE TYPE "Role" AS ENUM ('PROCTOR', 'EXAMINEE');
 
+-- CreateEnum
+CREATE TYPE "Platform" AS ENUM ('TEAMS', 'GOOGLE_FORMS', 'MOODLE');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
@@ -18,6 +21,7 @@ CREATE TABLE "Class" (
     "name" TEXT NOT NULL,
     "section" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "code" TEXT NOT NULL,
     "proctorId" INTEGER NOT NULL,
 
     CONSTRAINT "Class_pkey" PRIMARY KEY ("id")
@@ -37,6 +41,10 @@ CREATE TABLE "Enrolment" (
 CREATE TABLE "Exam" (
     "id" SERIAL NOT NULL,
     "classId" INTEGER NOT NULL,
+    "link" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "platform" "Platform" NOT NULL DEFAULT E'TEAMS',
     "startTime" TIMESTAMP(3) NOT NULL,
     "endTime" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
