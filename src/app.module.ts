@@ -5,9 +5,7 @@ import { ExamModule } from './exam/exam.module'
 import { ActivityModule } from './activity/activity.module'
 
 @Module({
-  // imports: [UserModule, ClassModule, ExamModule, ActivityModule],
-  imports: [],
-
+  imports: [UserModule, ClassModule, ExamModule, ActivityModule],
   controllers: [],
   providers: [],
 })

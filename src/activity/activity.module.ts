@@ -10,4 +10,3 @@ import { ActivityController } from './activity.controller'
   providers: [PrismaService, ActivityService],
 })
 export class ActivityModule {}
-throw new Error('asdasd')
