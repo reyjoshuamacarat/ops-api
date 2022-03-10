@@ -23,7 +23,7 @@ export class ExamService {
     return this.prisma.exam.findMany({
       where: {
         ...where,
-        class: { Enrolment: { some: { userId: examineeId } } },
+        Class: { Enrolment: { some: { userId: examineeId } } },
       },
       orderBy,
     })
@@ -38,7 +38,7 @@ export class ExamService {
     return this.prisma.exam.findMany({
       where: {
         ...where,
-        class: { proctorId },
+        Class: { proctorId },
       },
       orderBy,
     })

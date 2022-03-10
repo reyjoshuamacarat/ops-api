@@ -1,4 +1,7 @@
 -- CreateEnum
+CREATE TYPE "ActivityName" AS ENUM ('SWITCHED_TAB', 'LOSE_WINDOW_FOCUS', 'WENT_INCOGNITO', 'ACCESSED_SITE', 'USED_SEARCH_ENGINE', 'FINISHED_EXAM_FAST', 'ENTERED_EXAM_LATE', 'FINISHED_EXAM', 'WENT_IDLE');
+
+-- CreateEnum
 CREATE TYPE "Role" AS ENUM ('PROCTOR', 'EXAMINEE');
 
 -- CreateEnum
@@ -52,8 +55,23 @@ CREATE TABLE "Exam" (
     CONSTRAINT "Exam_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Activity" (
+    "id" SERIAL NOT NULL,
+    "isSuspicious" BOOLEAN NOT NULL,
+    "name" "ActivityName" NOT NULL,
+    "description" TEXT,
+    "examId" INTEGER NOT NULL,
+    "examineeId" INTEGER NOT NULL,
+
+    CONSTRAINT "Activity_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Class_code_key" ON "Class"("code");
 
 -- AddForeignKey
 ALTER TABLE "Class" ADD CONSTRAINT "Class_proctorId_fkey" FOREIGN KEY ("proctorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -66,3 +84,9 @@ ALTER TABLE "Enrolment" ADD CONSTRAINT "Enrolment_classId_fkey" FOREIGN KEY ("cl
 
 -- AddForeignKey
 ALTER TABLE "Exam" ADD CONSTRAINT "Exam_classId_fkey" FOREIGN KEY ("classId") REFERENCES "Class"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Activity" ADD CONSTRAINT "Activity_examineeId_fkey" FOREIGN KEY ("examineeId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Activity" ADD CONSTRAINT "Activity_examId_fkey" FOREIGN KEY ("examId") REFERENCES "Exam"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
