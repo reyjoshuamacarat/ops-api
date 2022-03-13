@@ -1,11 +1,18 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from 'src/prisma.service'
+import { PrismaService } from '../../prisma/prisma.service'
 import { Prisma, Exam, User } from '@prisma/client'
 
 @Injectable()
 export class ExamService {
   constructor(private prisma: PrismaService) {}
 
+  async exam(
+    examWhereUniqueInput: Prisma.ExamWhereUniqueInput,
+  ): Promise<Exam | null> {
+    return this.prisma.exam.findUnique({
+      where: examWhereUniqueInput,
+    })
+  }
   async exams(params: {
     where?: Prisma.ExamWhereInput
     orderBy?: Prisma.ExamOrderByWithRelationInput

@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpException,
+  HttpStatus,
   Post,
   Query,
 } from '@nestjs/common'
@@ -41,15 +42,27 @@ export class ClassController {
   async enrol(
     @Body() data: { code: ClassModel['code']; examineeId: User['id'] },
   ): Promise<ClassModel> {
-    const classInstance = await this.classService.class({ code: data.code })
+    const { code, examineeId } = data
+    const classInstance = await this.classService.class({ code })
 
-    if (classInstance)
-      return this.classService.enrol({
-        classId: classInstance.id,
-        examineeId: data.examineeId,
-      })
+    const enrolment = await this.classService.enrolment({
+      classId: classInstance.id,
+      userId: +examineeId,
+    })
 
-    throw new HttpException('Class not found', 400)
+    if (enrolment)
+      throw new HttpException(
+        'User is already enrolled in this class',
+        HttpStatus.BAD_REQUEST,
+      )
+
+    if (!classInstance)
+      throw new HttpException('Class not found', HttpStatus.NOT_FOUND)
+
+    return this.classService.enrol({
+      classId: classInstance.id,
+      examineeId,
+    })
   }
 
   @Post()

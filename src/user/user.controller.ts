@@ -1,23 +1,57 @@
 import { Body, HttpException, HttpStatus, Param, Query } from '@nestjs/common'
 import { UserService } from './user.service'
-import { User as UserModel, Class } from '@prisma/client'
+import { ExamService } from '../exam/exam.service'
+import { User as UserModel, Class, Exam as ExamModel } from '@prisma/client'
 import { Controller, Get, Post } from '@nestjs/common'
 import * as bcrypt from 'bcrypt'
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly examService: ExamService,
+  ) {}
+
+  @Get('/activities')
+  async getUsersActivitiesByExam(
+    @Query('examId') examId: ExamModel['id'],
+  ): Promise<UserModel[]> {
+    examId = +examId
+    const exam = await this.examService.exam({ id: +examId })
+
+    if (exam)
+      return this.userService.users({
+        where: {
+          Enrolment: { some: { classId: exam.classId } },
+          AND: { Activity: { some: { examId } } },
+        },
+        select: {
+          id: true,
+          role: true,
+          email: true,
+          Activity: {
+            where: { examId, isSuspicious: true },
+          },
+        },
+      })
+
+    throw new HttpException('Exam not found', HttpStatus.NOT_FOUND)
+  }
 
   @Get('/:id')
   async getUserById(@Param('id') id: string): Promise<UserModel | null> {
     return this.userService.user({ id: +id })
   }
+
   @Get()
-  async getUsers(
+  async getUsersByClass(
     @Query('classId') classId?: Class['id'],
   ): Promise<UserModel[]> {
     if (classId) {
-      return this.userService.usersFromClass({ classId: +classId })
+      classId = +classId
+      return this.userService.users({
+        where: { Enrolment: { some: { classId } } },
+      })
     }
     return this.userService.users({})
   }

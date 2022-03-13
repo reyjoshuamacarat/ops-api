@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../prisma.service'
-import { Prisma, Class, User } from '@prisma/client'
-import { generateCode } from '../utils'
+import { generateCode } from '../utils/utils.service'
+import { PrismaService } from '../../prisma/prisma.service'
+import { Prisma, Class, User, Enrolment } from '@prisma/client'
 
 @Injectable()
 export class ClassService {
@@ -27,9 +27,9 @@ export class ClassService {
     examineeId: User['id']
     orderBy?: Prisma.ExamOrderByWithRelationInput
   }): Promise<Class[]> {
-    const { examineeId, orderBy } = params
+    const { examineeId: userId, orderBy } = params
     return this.prisma.class.findMany({
-      where: { Enrolment: { some: { userId: examineeId } } },
+      where: { Enrolment: { some: { userId } } },
       orderBy,
     })
   }
@@ -45,6 +45,12 @@ export class ClassService {
     return this.prisma.class.create({
       data: { ...data, code, proctorId: +data.proctorId },
     })
+  }
+
+  async enrolment(
+    enrolmentWhereInput: Prisma.EnrolmentWhereInput,
+  ): Promise<Enrolment | null> {
+    return this.prisma.enrolment.findFirst({ where: enrolmentWhereInput })
   }
 
   async enrol(params: {
