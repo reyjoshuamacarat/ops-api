@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Post,
   Query,
+  Param,
 } from '@nestjs/common'
 import { ClassService } from './class.service'
 import { Class as ClassModel, Prisma, User } from '@prisma/client'
@@ -34,8 +35,8 @@ export class ClassController {
   }
 
   @Get('/:id')
-  async getClassById(@Query('id') id: ClassModel['id']): Promise<ClassModel> {
-    return this.classService.class({ id })
+  async getClassById(@Param('id') id: ClassModel['id']): Promise<ClassModel> {
+    return this.classService.class({ id: +id })
   }
 
   @Post('/enrol')

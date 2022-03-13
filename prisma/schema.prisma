@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -17,9 +14,9 @@ model User {
   name      String
   role      Role        @default(EXAMINEE)
   createdAt DateTime    @default(now())
-  Enrolment Enrolment[]
-  Class     Class[]
   Activity  Activity[]
+  Class     Class[]
+  Enrolment Enrolment[]
 }
 
 model Class {
@@ -28,19 +25,19 @@ model Class {
   section   String
   createdAt DateTime    @default(now())
   code      String      @unique
-  Enrolment Enrolment[]
-  Exam      Exam[]
   proctorId Int
   Proctor   User        @relation(fields: [proctorId], references: [id])
+  Enrolment Enrolment[]
+  Exam      Exam[]
 }
 
 model Enrolment {
   id         Int      @id @default(autoincrement())
   userId     Int
   classId    Int
-  User       User     @relation(fields: [userId], references: [id])
-  Class      Class    @relation(fields: [classId], references: [id])
   enrolledAt DateTime @default(now())
+  Class      Class    @relation(fields: [classId], references: [id])
+  User       User     @relation(fields: [userId], references: [id])
 
   @@unique([userId, classId], name: "enrolmentIdentifier")
 }
@@ -48,14 +45,14 @@ model Enrolment {
 model Exam {
   id          Int        @id @default(autoincrement())
   classId     Int
-  Class       Class      @relation(fields: [classId], references: [id])
   link        String
   name        String
-  description String?
+  description String     @default("")
   platform    Platform   @default(TEAMS)
   startTime   DateTime
   endTime     DateTime
   createdAt   DateTime   @default(now())
+  Class       Class      @relation(fields: [classId], references: [id])
   Activity    Activity[]
 }
 
@@ -65,10 +62,10 @@ model Activity {
   name         ActivityName
   description  String?
   examId       Int
-  Exam         Exam         @relation(fields: [examId], references: [id])
   examineeId   Int
-  Examinee     User         @relation(fields: [examineeId], references: [id])
   createdAt    DateTime     @default(now())
+  Exam         Exam         @relation(fields: [examId], references: [id])
+  Examinee     User         @relation(fields: [examineeId], references: [id])
 }
 
 enum ActivityName {

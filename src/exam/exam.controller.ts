@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common'
 import { Exam as ExamModel, Prisma, User } from '@prisma/client'
 import { ExamService } from './exam.service'
 
@@ -39,6 +39,10 @@ export class ExamController {
     return this.examService.exams({ where })
   }
 
+  @Get('/:id')
+  async getExamById(@Param('id') id: ExamModel['id']): Promise<ExamModel> {
+    return this.examService.exam({ id: +id })
+  }
   @Post()
   async createExam(@Body() data: ExamModel): Promise<ExamModel> {
     data.classId = +data.classId
