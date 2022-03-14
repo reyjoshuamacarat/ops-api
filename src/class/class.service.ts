@@ -41,7 +41,6 @@ export class ClassService {
       await this.prisma.class.findUnique({ where: { code } });
       code = generateCode()
     ) {}
-
     return this.prisma.class.create({
       data: { ...data, code, proctorId: +data.proctorId },
     })
