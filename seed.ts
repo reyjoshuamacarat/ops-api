@@ -15,6 +15,40 @@ const ACTIVITY = [
   'WENT_IDLE',
 ]
 
+const CLASS_NAMES = [
+  'Distributed Systems',
+  'Software Engineering',
+  'Discrete Mathematics',
+  'Special Topics',
+  'Intro to Computer Science',
+  'Intro to Programming',
+  'Programming Languages',
+  'Object Oriented Programming',
+  'Data Structures',
+  'Algorithms',
+  'Operating Systems',
+  'Computer Architecture',
+  'Computer Networks',
+  'Computer Graphics',
+  'Computer Vision',
+  'Multimedia',
+  'Mobile Development',
+  'Web Development',
+  'Ethics',
+  'Understanding the Self',
+  'Purposive Communication',
+  'Industry Trends',
+  'Modern Tools',
+  'Differential Calculus',
+  'Precalculus',
+  'Mechatronics',
+  'Chemistry',
+  'Physics',
+  'Science Technology and Society',
+  'Quantitative Methods',
+  'Research Methods',
+]
+
 async function main() {
   const axios = a.create({
     baseURL: 'http://localhost:8000/api',
@@ -41,13 +75,19 @@ async function main() {
 
   // create fake classes
   for (let i = 1; i <= ROUNDS; i++) {
-    const name = `Class ${Math.floor(Math.random() * ROUNDS)}`
-    const section = `Section ${Math.floor(Math.random() * ROUNDS)}`
     const proctorId = 1
+    const name = CLASS_NAMES[Math.floor(Math.random() * CLASS_NAMES.length)]
+    const section = `${faker.random.alpha({ upcase: true })}${Math.floor(
+      Math.random() * ROUNDS,
+    )}`
+    const courseCode = `${faker.random.alpha({
+      upcase: true,
+      count: 2,
+    })}${faker.datatype.number({ min: 100, max: 999 })}`
 
     const {
       data: { code },
-    } = await axios.post('/classes', { name, section, proctorId })
+    } = await axios.post('/classes', { name, section, proctorId, courseCode })
     codeList.push(code)
   }
 

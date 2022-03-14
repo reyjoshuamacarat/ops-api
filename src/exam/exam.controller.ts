@@ -1,10 +1,17 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common'
-import { Exam as ExamModel, Prisma, User } from '@prisma/client'
+import { Exam as ExamModel, Prisma, User, Class } from '@prisma/client'
 import { ExamService } from './exam.service'
 
 @Controller('exams')
 export class ExamController {
   constructor(private readonly examService: ExamService) {}
+
+  @Get()
+  async getExamsByClass(
+    @Query('classId') classId: Class['id'],
+  ): Promise<ExamModel[]> {
+    return this.examService.exams({ where: { classId: +classId } })
+  }
 
   @Get()
   async getExams(
