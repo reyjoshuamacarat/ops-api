@@ -54,4 +54,14 @@ export class ExamService {
   async create(data: Exam): Promise<Exam> {
     return this.prisma.exam.create({ data })
   }
+
+  async activeExam(params: { proctorId: User['id'] }): Promise<Exam | null> {
+    const now = new Date()
+    return this.prisma.exam.findFirst({
+      where: {
+        Class: { proctorId: params.proctorId },
+        AND: { startTime: { lte: now }, AND: { endTime: { gte: now } } },
+      },
+    })
+  }
 }

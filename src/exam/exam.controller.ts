@@ -39,6 +39,13 @@ export class ExamController {
     return this.examService.exams({ where })
   }
 
+  @Get('/active')
+  async getActiveExam(
+    @Query('proctorId') proctorId: User['id'],
+  ): Promise<ExamModel> {
+    return this.examService.activeExam({ proctorId })
+  }
+
   @Get('/:id')
   async getExamById(@Param('id') id: ExamModel['id']): Promise<ExamModel> {
     return this.examService.exam({ id: +id })
