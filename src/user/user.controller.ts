@@ -38,6 +38,13 @@ export class UserController {
     throw new HttpException('Exam not found', HttpStatus.NOT_FOUND)
   }
 
+  @Get('/get')
+  async getUserByEmail(
+    @Query('email') email: UserModel['email'],
+  ): Promise<UserModel> {
+    return this.userService.user({ email })
+  }
+
   @Get('/:id')
   async getUserById(@Param('id') id: string): Promise<UserModel | null> {
     return this.userService.user({ id: +id })
