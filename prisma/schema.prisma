@@ -47,7 +47,8 @@ model Exam {
   classId     Int
   link        String
   name        String
-  description String     @default("")
+  description String?
+  status      STATUS     @default(UPCOMING)
   platform    Platform   @default(TEAMS)
   startTime   DateTime
   endTime     DateTime
@@ -89,4 +90,10 @@ enum Platform {
   TEAMS
   GOOGLE_FORMS
   MOODLE
+}
+
+enum STATUS {
+  UPCOMING
+  ONGOING
+  FINISHED
 }
