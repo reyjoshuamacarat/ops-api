@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../../prisma/prisma.service'
 import { Prisma, Exam, User } from '@prisma/client'
-
 @Injectable()
 export class ExamService {
   constructor(private prisma: PrismaService) {}
@@ -18,7 +17,23 @@ export class ExamService {
     orderBy?: Prisma.ExamOrderByWithRelationInput
   }): Promise<Exam[]> {
     const { where, orderBy } = params
-    return this.prisma.exam.findMany({ where, orderBy })
+    const data = this.prisma.exam.findMany({
+      where,
+      orderBy,
+      include: { Activity: true },
+    })
+
+    return (await data).map((exam) => {
+      const { Activity } = exam
+      return {
+        ...exam,
+        countTakers: Activity.filter(
+          (activity) => activity.name === 'JOINED_EXAM',
+        ).length,
+        countActivity: Activity.filter((activity) => activity.isSuspicious)
+          .length,
+      }
+    })
   }
 
   async examsFromExaminee(params: {

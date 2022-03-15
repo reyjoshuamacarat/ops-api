@@ -13,6 +13,7 @@ const ACTIVITY = [
   'ENTERED_EXAM_LATE',
   'FINISHED_EXAM',
   'WENT_IDLE',
+  'JOINED_EXAM',
 ]
 
 const CLASS_NAMES = [
@@ -129,7 +130,7 @@ async function main() {
     const examId = Math.floor(Math.random() * ROUNDS) + 1
     const examineeId = Math.floor(Math.random() * ROUNDS) + 1
     const name = ACTIVITY[Math.floor(Math.random() * ACTIVITY.length)]
-    const isSuspicious = name !== 'FINISHED_EXAM'
+    const isSuspicious = name !== 'FINISHED_EXAM' && name !== 'JOINED_EXAM'
     const description = faker.lorem.sentence()
 
     await axios.post('/activities', {
