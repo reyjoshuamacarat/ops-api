@@ -39,6 +39,10 @@ export class ExamController {
     return this.examService.exams({ where })
   }
 
+  @Get('/xls')
+  async getExamExcelData(@Query('id') id: ExamModel['id']): Promise<ExamModel> {
+    return this.examService.examsExcelData({ id: +id })
+  }
   @Get('/active')
   async getActiveExam(
     @Query('proctorId') proctorId: User['id'],
