@@ -15,7 +15,7 @@ async function main() {
   await axios.post('/users/signup', {
     name: 'Examinee',
     email: 'examinee@cit.edu',
-    role: 'Examinee',
+    role: 'EXAMINEE',
     password: '123',
   })
 
