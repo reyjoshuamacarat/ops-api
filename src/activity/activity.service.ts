@@ -7,7 +7,7 @@ export class ActivityService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: Activity): Promise<Activity> {
-    return this.prisma.activity.create({ data })
+    return this.prisma.activity.create({ data, include: { Examinee: true } })
   }
 
   async activities(params: {
