@@ -14,6 +14,7 @@ export class ActivityController {
     return this.activityService.activities({
       where: { examId, examineeId },
       include: { Examinee: true },
+      orderBy: { id: 'asc' },
     })
   }
 
