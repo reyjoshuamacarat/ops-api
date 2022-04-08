@@ -28,7 +28,7 @@ export class ActivityController {
           examId: data.examId,
           name: 'USED_SEARCH_ENGINE',
           createdAt: {
-            gte: subtractSeconds(new Date(), 2),
+            gte: subtractSeconds(new Date(), 4),
           },
         },
       })
