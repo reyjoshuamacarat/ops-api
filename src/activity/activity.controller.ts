@@ -32,7 +32,7 @@ export class ActivityController {
           },
         },
       })
-      if (previousInstances.length > 0) return null
+      if (previousInstances?.length > 0) return null
     }
 
     data.examId = +data.examId
