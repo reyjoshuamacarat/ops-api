@@ -13,8 +13,9 @@ export class ActivityService {
   async activities(params: {
     where?: Prisma.ActivityWhereInput
     orderBy?: Prisma.ActivityOrderByWithRelationInput
+    include?: Prisma.ActivityInclude
   }) {
-    const { where, orderBy } = params
-    return this.prisma.activity.findMany({ where, orderBy })
+    const { where, orderBy, include } = params
+    return this.prisma.activity.findMany({ where, orderBy, include })
   }
 }
