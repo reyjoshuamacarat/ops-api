@@ -12,7 +12,3 @@ export const generateCode = () => {
 
   return code
 }
-
-export const subtractSeconds = (date: Date, seconds: number) => {
-  return new Date(date.getTime() - seconds * 1000)
-}
