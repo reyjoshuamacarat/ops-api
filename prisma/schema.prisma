@@ -81,6 +81,7 @@ enum ActivityName {
   FINISHED_EXAM
   WENT_IDLE
   JOINED_EXAM
+  RETURNED
 }
 
 enum Role {
