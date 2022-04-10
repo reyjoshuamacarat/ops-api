@@ -51,24 +51,6 @@ export class ExamService {
     }
   }
 
-  async examsExcelData(params: { id: Exam['id'] }): Promise<Exam> {
-    const { id } = params
-
-    return this.prisma.exam.findUnique({
-      where: { id },
-      include: {
-        Class: {
-          include: {
-            Enrolment: {
-              select: {
-                User: { include: { Activity: { where: { examId: id } } } },
-              },
-            },
-          },
-        },
-      },
-    })
-  }
   async examsFromExaminee(params: {
     examineeId: User['id']
     where?: Prisma.ExamWhereInput

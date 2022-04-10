@@ -18,7 +18,8 @@ export class UserService {
     where?: Prisma.UserWhereInput
     orderBy?: Prisma.UserOrderByWithRelationInput
     select?: Prisma.UserSelect
-  }): Promise<User[]> {
+    include?: Prisma.UserInclude
+  }): Promise<User[] | null> {
     return this.prisma.user.findMany({ ...params })
   }
 
