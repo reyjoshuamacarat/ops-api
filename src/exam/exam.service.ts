@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../../prisma/prisma.service'
 import { Prisma, Exam, User } from '@prisma/client'
+import { isAfter, isBefore } from 'date-fns'
 @Injectable()
 export class ExamService {
   constructor(private prisma: PrismaService) {}
@@ -8,9 +9,11 @@ export class ExamService {
   async exam(
     examWhereUniqueInput: Prisma.ExamWhereUniqueInput,
   ): Promise<Exam | null> {
-    return this.prisma.exam.findUnique({
+    const data = await this.prisma.exam.findUnique({
       where: examWhereUniqueInput,
     })
+
+    return { ...data, status: this.getExamStatus(data.startTime, data.endTime) }
   }
   async exams(params: {
     where?: Prisma.ExamWhereInput
@@ -27,6 +30,7 @@ export class ExamService {
       const { Activity } = exam
       return {
         ...exam,
+        status: this.getExamStatus(exam.startTime, exam.endTime),
         countTakers: Activity.filter(
           (activity) => activity.name === 'JOINED_EXAM',
         ).length,
@@ -34,6 +38,17 @@ export class ExamService {
           .length,
       }
     })
+  }
+
+  getExamStatus(startTime: Date, endTime: Date): Exam['status'] {
+    const now = new Date()
+    if (isAfter(startTime, now)) {
+      return 'UPCOMING'
+    } else if (isBefore(endTime, now)) {
+      return 'FINISHED'
+    } else {
+      return 'ONGOING'
+    }
   }
 
   async examsExcelData(params: { id: Exam['id'] }): Promise<Exam> {
@@ -85,7 +100,14 @@ export class ExamService {
   }
 
   async create(data: Exam): Promise<Exam> {
-    return this.prisma.exam.create({ data })
+    const returnData = await this.prisma.exam.create({ data })
+    return {
+      ...returnData,
+      status: this.getExamStatus(
+        new Date(data.startTime),
+        new Date(data.endTime),
+      ),
+    }
   }
 
   async activeExam(params: { proctorId: User['id'] }): Promise<Exam | null> {
