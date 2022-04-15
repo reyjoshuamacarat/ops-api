@@ -13,7 +13,7 @@ async function main() {
   })
 
   await axios.post('/users/signup', {
-    name: 'Examinee',
+    name: 'Rey Joshua H. Macarat',
     email: 'examinee@cit.edu',
     role: 'EXAMINEE',
     password: '123',
