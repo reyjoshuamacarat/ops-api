@@ -6,7 +6,7 @@ const PLATFORMS = ['TEAMS', 'GOOGLE_FORMS', 'MOODLE']
 const ACTIVITY = [
   'SWITCHED_TAB',
   'LOSE_WINDOW_FOCUS',
-  'WENT_INCOGNITO',
+  'USED_PASTE_FUNCTION',
   'ACCESSED_SITE',
   'USED_SEARCH_ENGINE',
   'FINISHED_EXAM_FAST',
@@ -61,6 +61,13 @@ async function main() {
     name: 'Proctor',
     email: 'proctor@cit.edu',
     role: 'PROCTOR',
+    password: '123',
+  })
+
+  await axios.post('/users/signup', {
+    name: 'Rey Joshua Macarat',
+    email: 'examinee@cit.edu',
+    role: 'EXAMINEE',
     password: '123',
   })
 
