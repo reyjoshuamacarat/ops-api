@@ -57,13 +57,25 @@ export class UserController {
   }
 
   @Get()
-  async getUsersByClass(
+  async getUsers(
     @Query('classId') classId?: Class['id'],
+    @Query('examId') examId?: ExamModel['id'],
   ): Promise<UserModel[]> {
     if (classId) {
       classId = +classId
       return this.userService.users({
         where: { Enrolment: { some: { classId } } },
+      })
+    } else if (examId) {
+      examId = +examId
+      return this.userService.users({
+        where: {
+          Activity: { some: { name: 'JOINED_EXAM' } },
+          AND: {
+            Activity: { none: { name: 'FINISHED_EXAM' } },
+            AND: { Activity: { every: { examId } } },
+          },
+        },
       })
     }
     return this.userService.users({})
