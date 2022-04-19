@@ -1,16 +1,10 @@
 import { Body, HttpException, HttpStatus, Param, Query } from '@nestjs/common'
 import { UserService } from './user.service'
 import { ExamService } from '../exam/exam.service'
-import {
-  User as UserModel,
-  Class,
-  Exam as ExamModel,
-  Activity,
-} from '@prisma/client'
+import { User as UserModel, Class, Exam as ExamModel } from '@prisma/client'
 import { Controller, Get, Post } from '@nestjs/common'
 import * as bcrypt from 'bcrypt'
 
-type UserWithActivities = UserModel & { Activity?: Activity[] }
 @Controller('users')
 export class UserController {
   constructor(
@@ -20,28 +14,34 @@ export class UserController {
 
   @Get('/activities')
   async getUsersActivitiesByExam(
-    @Query('examId') examId: ExamModel['id'],
-  ): Promise<UserWithActivities[]> {
-    examId = +examId
-    const exam = await this.examService.exam({ id: +examId })
+    @Query('examId') examId?: ExamModel['id'],
+  ): Promise<UserModel[]> {
+    if (examId) {
+      examId = +examId
+      const exam = await this.examService.exam({ id: +examId })
 
-    if (exam) {
-      const data = (await this.userService.users({
-        where: {
-          Enrolment: { some: { classId: exam.classId } },
-        },
-        include: {
-          Activity: {
-            where: { examId, isSuspicious: true },
-            orderBy: { createdAt: 'asc' },
+      if (exam) {
+        return this.userService.users({
+          where: {
+            Enrolment: { some: { classId: exam.classId } },
           },
-        },
-      })) as UserWithActivities[]
+          include: {
+            Activity: {
+              where: { examId, isSuspicious: true },
+              orderBy: { createdAt: 'asc' },
+            },
+          },
+        })
+      }
 
-      return data.filter((user) => user.Activity?.length > 0)
+      throw new HttpException('Exam not found', HttpStatus.NOT_FOUND)
     }
 
-    throw new HttpException('Exam not found', HttpStatus.NOT_FOUND)
+    return this.userService.users({
+      include: {
+        Activity: { orderBy: { createdAt: 'asc' } },
+      },
+    })
   }
 
   @Get('/get')
