@@ -76,6 +76,13 @@ export class UserController {
             AND: { Activity: { every: { examId } } },
           },
         },
+        include: {
+          Activity: {
+            where: {
+              isSuspicious: { equals: true },
+            },
+          },
+        },
       })
     }
     return this.userService.users({})
