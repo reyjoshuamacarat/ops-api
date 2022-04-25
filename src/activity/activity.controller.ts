@@ -10,8 +10,13 @@ export class ActivityController {
     @Query('examId') examId?: Exam['id'],
     @Query('examineeId') examineeId?: User['id'],
   ): Promise<ActivityModel[]> {
+    const where = {}
+
+    if (examineeId) where['examineeId'] = +examineeId
+    if (examId) where['examId'] = examId
+
     return this.activityService.activities({
-      where: { examId: +examId, examineeId: +examineeId },
+      where,
       include: { Examinee: true },
       orderBy: { id: 'asc' },
     })
