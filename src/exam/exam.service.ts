@@ -20,13 +20,21 @@ export class ExamService {
     orderBy?: Prisma.ExamOrderByWithRelationInput
   }): Promise<Exam[]> {
     const { where, orderBy } = params
-    const data = this.prisma.exam.findMany({
-      where,
+    const { status, ...rest } = where
+
+    let data = await this.prisma.exam.findMany({
+      where: rest,
       orderBy,
       include: { Activity: true },
     })
 
-    return (await data).map((exam) => {
+    if (status) {
+      data = data.filter(
+        (exam) => status === this.getExamStatus(exam.startTime, exam.endTime),
+      )
+    }
+
+    return data.map((exam) => {
       const { Activity } = exam
       return {
         ...exam,
@@ -40,7 +48,10 @@ export class ExamService {
     })
   }
 
-  getExamStatus(startTime: Date, endTime: Date): Exam['status'] {
+  getExamStatus(
+    startTime: Exam['startTime'],
+    endTime: Exam['endTime'],
+  ): Exam['status'] {
     const now = new Date()
     if (isAfter(startTime, now)) {
       return 'UPCOMING'
@@ -57,7 +68,7 @@ export class ExamService {
     orderBy?: Prisma.ExamOrderByWithRelationInput
   }): Promise<Exam[]> {
     const { examineeId, orderBy, where } = params
-    return this.prisma.exam.findMany({
+    return this.exams({
       where: {
         ...where,
         Class: { Enrolment: { some: { userId: examineeId } } },
@@ -72,7 +83,7 @@ export class ExamService {
     orderBy?: Prisma.ExamOrderByWithRelationInput
   }): Promise<Exam[]> {
     const { proctorId, orderBy, where } = params
-    return this.prisma.exam.findMany({
+    return this.exams({
       where: {
         ...where,
         Class: { proctorId },
