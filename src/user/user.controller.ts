@@ -38,9 +38,7 @@ export class UserController {
     }
 
     return this.userService.users({
-      include: {
-        Activity: { orderBy: { createdAt: 'asc' } },
-      },
+      include: { Activity: { orderBy: { createdAt: 'asc' } } },
     })
   }
 

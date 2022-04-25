@@ -91,14 +91,4 @@ export class ExamService {
       ),
     }
   }
-
-  async activeExam(params: { proctorId: User['id'] }): Promise<Exam | null> {
-    const now = new Date()
-    return this.prisma.exam.findFirst({
-      where: {
-        Class: { proctorId: params.proctorId },
-        AND: { startTime: { lte: now }, AND: { endTime: { gte: now } } },
-      },
-    })
-  }
 }
