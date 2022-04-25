@@ -13,7 +13,7 @@ export class ActivityController {
     const where = {}
 
     if (examineeId) where['examineeId'] = +examineeId
-    if (examId) where['examId'] = examId
+    if (examId) where['examId'] = +examId
 
     return this.activityService.activities({
       where,
