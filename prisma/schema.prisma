@@ -14,7 +14,6 @@ model User {
   name      String
   role      Role        @default(EXAMINEE)
   createdAt DateTime    @default(now())
-  isTakingAnExam Boolean @default(false)
   Activity  Activity[]
   Class     Class[]
   Enrolment Enrolment[]
