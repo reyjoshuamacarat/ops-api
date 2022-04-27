@@ -27,7 +27,7 @@ export class UserController {
           },
           include: {
             Activity: {
-              where: { examId, isSuspicious: true },
+              where: { examId },
               orderBy: { createdAt: 'asc' },
             },
           },
