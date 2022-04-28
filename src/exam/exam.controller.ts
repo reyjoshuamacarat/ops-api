@@ -17,6 +17,10 @@ export class ExamController {
     // eslint-disable-next-line prefer-const
     let { examineeId, proctorId, ...where } = queryParams
 
+    const defaultOrderBy: Prisma.ExamOrderByWithRelationInput = {
+      createdAt: 'desc',
+    }
+
     // parse toplevel query params
     if (where.classId) where.classId = +where.classId
 
@@ -25,6 +29,7 @@ export class ExamController {
       return this.examService.examsFromExaminee({
         examineeId,
         where,
+        orderBy: defaultOrderBy,
       })
     }
 
@@ -33,10 +38,11 @@ export class ExamController {
       return this.examService.examsFromProctor({
         proctorId,
         where,
+        orderBy: defaultOrderBy,
       })
     }
 
-    return this.examService.exams({ where })
+    return this.examService.exams({ where, orderBy: defaultOrderBy })
   }
 
   @Get('/:id')
