@@ -39,6 +39,12 @@ export class ClassController {
     return this.classService.class({ id: +id })
   }
 
+  @Post()
+  async createClass(@Body() data: ClassModel): Promise<ClassModel> {
+    data.proctorId = +data.proctorId
+    return this.classService.createClass(data)
+  }
+
   @Post('/enrol')
   async enrol(
     @Body() data: { code: ClassModel['code']; examineeId: User['id'] },
@@ -64,10 +70,5 @@ export class ClassController {
       classId: classInstance.id,
       examineeId,
     })
-  }
-
-  @Post()
-  async createClass(@Body() data: ClassModel): Promise<ClassModel> {
-    return this.classService.createClass(data)
   }
 }

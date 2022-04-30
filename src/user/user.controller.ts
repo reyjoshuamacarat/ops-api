@@ -12,6 +12,38 @@ export class UserController {
     private readonly examService: ExamService,
   ) {}
 
+  @Get()
+  async getUsers(
+    @Query('classId') classId?: Class['id'],
+    @Query('examId') examId?: ExamModel['id'],
+  ): Promise<UserModel[]> {
+    if (classId) {
+      classId = +classId
+      return this.userService.users({
+        where: { Enrolment: { some: { classId } } },
+      })
+    } else if (examId) {
+      examId = +examId
+      return this.userService.users({
+        where: {
+          Activity: { some: { name: 'JOINED_EXAM' } },
+          AND: {
+            Activity: { none: { name: 'FINISHED_EXAM' } },
+            AND: { Activity: { every: { examId } } },
+          },
+        },
+        include: {
+          Activity: {
+            where: {
+              isSuspicious: { equals: true },
+            },
+          },
+        },
+      })
+    }
+    return this.userService.users({})
+  }
+
   @Get('/activities')
   async getUsersActivitiesByExam(
     @Query('examId') examId?: ExamModel['id'],
@@ -52,38 +84,6 @@ export class UserController {
   @Get('/:id')
   async getUserById(@Param('id') id: string): Promise<UserModel | null> {
     return this.userService.user({ id: +id })
-  }
-
-  @Get()
-  async getUsers(
-    @Query('classId') classId?: Class['id'],
-    @Query('examId') examId?: ExamModel['id'],
-  ): Promise<UserModel[]> {
-    if (classId) {
-      classId = +classId
-      return this.userService.users({
-        where: { Enrolment: { some: { classId } } },
-      })
-    } else if (examId) {
-      examId = +examId
-      return this.userService.users({
-        where: {
-          Activity: { some: { name: 'JOINED_EXAM' } },
-          AND: {
-            Activity: { none: { name: 'FINISHED_EXAM' } },
-            AND: { Activity: { every: { examId } } },
-          },
-        },
-        include: {
-          Activity: {
-            where: {
-              isSuspicious: { equals: true },
-            },
-          },
-        },
-      })
-    }
-    return this.userService.users({})
   }
 
   @Post('/signup')

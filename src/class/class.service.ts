@@ -42,7 +42,7 @@ export class ClassService {
       code = generateCode()
     ) {}
     return this.prisma.class.create({
-      data: { ...data, code, proctorId: +data.proctorId },
+      data: { ...data, code },
     })
   }
 
