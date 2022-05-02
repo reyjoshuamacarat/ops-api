@@ -63,15 +63,19 @@ export class ExamService {
   }
 
   async examsFromExaminee(params: {
-    examineeId: User['id']
+    examineeId?: User['id']
     where?: Prisma.ExamWhereInput
     orderBy?: Prisma.ExamOrderByWithRelationInput
   }): Promise<Exam[]> {
     const { examineeId, orderBy, where } = params
+
     return this.exams({
       where: {
         ...where,
         Class: { Enrolment: { some: { userId: examineeId } } },
+        Activity: examineeId
+          ? { none: { name: 'FINISHED_EXAM', examineeId } }
+          : {},
       },
       orderBy,
     })
